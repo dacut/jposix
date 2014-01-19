@@ -1,7 +1,7 @@
 -include /etc/lsb-release
 
 ifeq ($(DISTRIB_ID),Ubuntu)
-JDK_DIR = /usr/lib/jvm/java-6-sun
+JDK_DIR = /usr/lib/jvm/default-java
 JDK_BIN_DIR = $(JDK_DIR)/bin
 JAVAC = $(JDK_BIN_DIR)/javac
 else
