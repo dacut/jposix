@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jposix-0.1" basedir="." default="release">
+  <property name="dir:build" location="build" />
+  <property name="dir:jdk" value="/opt/jdk1.6.0_10" />
+  <property name="dir:classes" location="${dir:build}/classes" />
+  <property name="dir:classes-g" location="${dir:build}/classes-g" />
+  <property name="dir:test-classes" location="${dir:build}/test-classes" />
+  <property name="dir:src:java" location="src/java" />
+  <property name="dir:src:java-tests" location="src/java-tests" />
+  <property name="dir:src:c" location="src/c" />
+  <property name="file:junit" location="/usr/share/java/junit4.jar" />
+  <property name="file:jar" location="${dir:build}/jposix-0.1.jar" />
+  <property name="file:jar-g" location="${dir:build}/jposix-0.1-g.jar" />
+
+  <target name="release" depends="jar" />
+
+  <target name="jar" depends="run-tests,compile-java">
+    <mkdir dir="${dir:build}" />
+    <jar destfile="${file:jar}" basedir="${dir:classes}" />
+    <jar destfile="${file:jar-g}" basedir="${dir:classes-g}" />
+  </target>
+
+  <target name="compile-java">
+    <mkdir dir="${dir:classes}" />
+    <mkdir dir="${dir:classes-g}" />
+    <javac srcdir="${dir:src:java}" destdir="${dir:classes}" debug="off"
+           source="1.5" target="1.5" verbose="on" fork="yes">
+      <include name="**/*.java" />
+    </javac>
+    <javac srcdir="${dir:src:java}" destdir="${dir:classes-g}" debug="on"
+           source="1.5" target="1.5" verbose="on" fork="yes">
+      <include name="**/*.java" />
+    </javac>
+  </target>
+
+  <target name="compile-tests" depends="compile-java">
+    <mkdir dir="${dir:test-classes}" />
+    <javac srcdir="${dir:src:java-tests}" destdir="${dir:test-classes}"
+           debug="on" source="1.5" target="1.5" verbose="on" fork="yes">
+      <include name="**/*.java" />
+      <classpath>
+        <pathelement path="${dir:classes-g}" />
+        <pathelement path="${file:junit}" />
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="run-tests" depends="compile-tests">
+    <junit fork="on" forkmode="once" haltonfailure="on" printsummary="withOutAndErr">
+      <classpath>
+        <pathelement path="${dir:classes-g}" />
+        <pathelement path="${file:junit}" />
+        <pathelement path="${dir:test-classes}" />
+      </classpath>
+      <formatter type="plain" usefile="false" />
+      <sysproperty key="java.library.path" value="${dir:build}" />
+      <test name="jposix.test.TestPosix" />
+    </junit>
+  </target>
+</project>
