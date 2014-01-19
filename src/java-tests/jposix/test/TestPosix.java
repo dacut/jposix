@@ -237,8 +237,10 @@ public class TestPosix {
                                "\"");
         }
         catch (OSException e) {
-            if (e.getErrno() != Posix.EINVAL)
+            if (e.getErrno() != Posix.EINVAL && e.getErrno() != Posix.ENOTTY) {
                 throw e;
+            }
+
             System.out.println("getlogin() has no controlling terminal -- " +
                                "skipping test.");
         }
